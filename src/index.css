@@ -1,0 +1,45 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+table {
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 0.8em;
+}
+
+th, td {
+  padding: 3px;
+  width: 100px;
+}
+
+th {
+  border-top: 1px solid lightgray;
+  border-bottom: 2px solid lightgray;
+  text-align: left;
+}
+
+tr {
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
+}
+
+thead > tr {
+  display: block;
+  position: relative;
+  cursor: pointer;
+}
+
+tbody {
+  display: block;
+  overflow: auto;
+  height: 500px;
+}
+
+.container {
+  width: 90%;
+  margin-right: auto;
+  margin-left: auto;
+}
