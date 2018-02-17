@@ -4,3 +4,10 @@ export const setTableData = (data) => {
         payload: data
     }
 };
+
+export const sortTable = (column, direction) => {
+    return {
+        type: 'SORT_TABLE',
+        payload: {column, direction}
+    }
+};

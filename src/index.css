@@ -15,21 +15,20 @@ th, td {
   width: 100px;
 }
 
-th {
-  border-top: 1px solid lightgray;
-  border-bottom: 2px solid lightgray;
-  text-align: left;
+
+tbody > tr {
+  border-bottom: 1px solid lightgray;
 }
 
-tr {
+th {
   border-top: 1px solid lightgray;
   border-bottom: 1px solid lightgray;
 }
 
 thead > tr {
   display: block;
-  position: relative;
   cursor: pointer;
+  text-align: left;
 }
 
 tbody {
@@ -38,8 +37,20 @@ tbody {
   height: 500px;
 }
 
+tbody > tr {
+  height: 70px;
+}
+
 .container {
   width: 90%;
   margin-right: auto;
   margin-left: auto;
+}
+
+.sortedDesc {
+  border-bottom: 3px solid blue;
+}
+
+.sortedAsc {
+  border-top: 3px solid blue;
 }
