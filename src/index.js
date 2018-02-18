@@ -8,7 +8,6 @@ import './index.css';
 import App from './App';
 import { allReducers } from "./reducers/index";
 import {saveState, loadState} from './utils/localStorage';
-import registerServiceWorker from './registerServiceWorker';
 
 const persistedState = loadState();
 
@@ -19,4 +18,3 @@ store.subscribe(throttle(() => {
 }, 1000));
 
 ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
-registerServiceWorker();
