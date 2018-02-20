@@ -11,9 +11,3 @@ export const sortTable = (column, direction) => {
         payload: {column, direction}
     }
 };
-
-export const loading = () => {
-    return {
-        type: 'LOADING'
-    }
-};

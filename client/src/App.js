@@ -1,22 +1,25 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {v4} from 'uuid';
-import csv from 'csvtojson';
-import {titanic} from './utils/titanic';
 import InfiniteScroll from 'react-infinite-scroller';
 
-import {setTableData, sortTable, loading} from './actions/table';
+import {setTableData, sortTable} from './actions/table';
 import {incCounter} from './actions/counter';
 
 class App extends Component {
 
     componentDidMount () {
         if (!this.props.table.data) {
-            let data = [];
-            csv()
-                .fromString(titanic)
-                .on('json', (jsonObj) => data.push(jsonObj))
-                .on('done', () => this.props.setTableData(data));
+            fetch('/api/data')
+                .then((response) => {
+                    if (!response.ok) {
+                        throw Error(response.statusText);
+                    } else {
+                        return response.json();
+                    }
+                })
+                .then(data => this.props.setTableData(data))
+                .catch(err => console.warn(err));
         }
     }
 
@@ -83,14 +86,20 @@ class App extends Component {
 
             return (
                 <thead>
-                    <tr>
-                        {tableHeaders}
-                    </tr>
+                <tr>
+                    {tableHeaders}
+                </tr>
                 </thead>
             );
         }
         else {
-            return undefined;
+            return (
+                <thead>
+                <tr>
+                    <th>Загрузка...</th>
+                </tr>
+                </thead>
+            );
         }
     }
 
@@ -105,7 +114,7 @@ class App extends Component {
                         element='tbody'
                         loadMore={this.loadMore}
                         hasMore={this.hasMore()}
-                        loader={<tr key='loader'><td key='load'>Загрузка...</td></tr>}>
+                        loader={<tr key='loader-row'><td key='loader-data'>Загрузка...</td></tr>}>
                         {this.renderBody()}
                     </InfiniteScroll>}
                 </table>
@@ -126,7 +135,6 @@ function mapDispatchToProps (dispatch) {
         setTableData: (data) => dispatch(setTableData(data)),
         sortTable: (column, direction) => dispatch(sortTable(column, direction)),
         incCounter: () => dispatch(incCounter()),
-        loading: () => dispatch(loading())
     }
 }
 
