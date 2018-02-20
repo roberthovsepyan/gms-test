@@ -5,9 +5,22 @@ body {
 }
 
 table {
-  table-layout: fixed;
   border-collapse: collapse;
   font-size: 0.8em;
+  table-layout: fixed;
+}
+
+thead {
+  position: fixed;
+  background-color: white;
+  top: 0;
+  display: block;
+  text-align: left;
+}
+
+tbody {
+  display: block;
+  margin-top: 40px;
 }
 
 th, td {
@@ -18,34 +31,18 @@ th, td {
 
 tbody > tr {
   border-bottom: 1px solid lightgray;
+  height: 70px;
 }
 
 th {
-  border-top: 1px solid lightgray;
   border-bottom: 1px solid lightgray;
 }
 
 thead > tr {
-  display: block;
   cursor: pointer;
-  text-align: left;
+  height: 40px;
 }
 
-tbody {
-  display: block;
-  overflow: auto;
-  height: 500px;
-}
-
-tbody > tr {
-  height: 70px;
-}
-
-.container {
-  width: 90%;
-  margin-right: auto;
-  margin-left: auto;
-}
 
 .sortedDesc {
   border-bottom: 3px solid blue;

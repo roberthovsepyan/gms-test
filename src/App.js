@@ -3,9 +3,10 @@ import {connect} from 'react-redux';
 import {v4} from 'uuid';
 import csv from 'csvtojson';
 import {titanic} from './utils/titanic';
+import InfiniteScroll from 'react-infinite-scroller';
 
-import {setTableData, sortTable} from './actions/table';
-
+import {setTableData, sortTable, loading} from './actions/table';
+import {incCounter} from './actions/counter';
 
 class App extends Component {
 
@@ -22,42 +23,13 @@ class App extends Component {
     handleSort = (event, sortKey) => {
         let data = this.props.table.data;
         let direction;
-        //can't sort correctly without predefined sorting (strings & numbers difference);
-        if (sortKey === 'Name' || sortKey === 'Sex' || sortKey === 'Cabin' || sortKey === 'Embarked') {
-            if (sortKey === this.props.table.sort.column && this.props.table.sort.direction === 'asc') {
-                data.sort((a, b) => b[sortKey].localeCompare(a[sortKey]));
-                direction = 'desc';
-            }
-            else {
-                data.sort((a, b) => a[sortKey].localeCompare(b[sortKey]));
-                direction = 'asc';
-            }
+        if (sortKey === this.props.table.sort.column && this.props.table.sort.direction === 'asc') {
+            data.sort((a, b) => b[sortKey].localeCompare(a[sortKey], undefined, {numeric: true}));
+            direction = 'desc';
         }
         else {
-            if (sortKey === this.props.table.sort.column && this.props.table.sort.direction === 'asc') {
-                data.sort((a, b) => {
-                    if (Number(a[sortKey]) > Number(b[sortKey])) {
-                        return -1;
-                    }
-                    if (Number(a[sortKey]) < Number(b[sortKey])) {
-                        return 1;
-                    }
-                    return 0;
-                });
-                direction = 'desc';
-            }
-            else {
-                data.sort((a, b) => {
-                    if (Number(a[sortKey]) > Number(b[sortKey])) {
-                        return 1;
-                    }
-                    if (Number(a[sortKey]) < Number(b[sortKey])) {
-                        return -1;
-                    }
-                    return 0;
-                });
-                direction = 'asc';
-            }
+            data.sort((a, b) => a[sortKey].localeCompare(b[sortKey], undefined, {numeric: true}));
+            direction = 'asc';
         }
         this.props.sortTable(sortKey, direction);
         this.props.setTableData(data);
@@ -77,7 +49,27 @@ class App extends Component {
         }
     };
 
-    renderTable () {
+    loadMore = () => {
+        this.props.incCounter();
+    };
+
+    hasMore = () => {
+        return this.props.counter.counter<19;
+    };
+
+    renderBody () {
+        return this.props.table.data.slice(0, 50*this.props.counter.counter).map((row, index) => {
+            let tableData = [];
+            for (let key in row) {
+                if(row.hasOwnProperty(key)) {
+                    tableData.push(<td key={v4()}>{row[key]}</td>);
+                }
+            }
+            return <tr key={index}>{tableData}</tr>;
+        });
+    }
+
+    renderHead () {
         if (this.props.table.data) {
             let object = this.props.table.data[0], headers = [];
             for (let key in object) {
@@ -88,26 +80,13 @@ class App extends Component {
             let tableHeaders = headers.map((header) => (
                 <th key={header} onClick={e => this.handleSort(e, header)} className={this.checkSorting(header)}>{header}
                 </th>));
-            let tableBody = this.props.table.data.map((row, index) => {
-                let tableData = [];
-                for (let key in row) {
-                    if(row.hasOwnProperty(key)) {
-                        tableData.push(<td key={v4()}>{row[key]}</td>);
-                    }
-                }
-                return <tr key={index}>{tableData}</tr>;
-            });
+
             return (
-                <table>
-                    <thead>
-                        <tr>
-                            {tableHeaders}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {tableBody}
-                    </tbody>
-                </table>
+                <thead>
+                    <tr>
+                        {tableHeaders}
+                    </tr>
+                </thead>
             );
         }
         else {
@@ -119,10 +98,17 @@ class App extends Component {
     render() {
         return (
             <div>
-                <h2 style={{textAlign: 'center', margin: '20px'}}>Пассажиры Титаника</h2>
-                <div className='container'>
-                    {this.renderTable() || 'Загрузка...'}
-                </div>
+                <table>
+                    {this.renderHead()}
+                    {this.props.table.data && <InfiniteScroll
+                        pageStart={0}
+                        element='tbody'
+                        loadMore={this.loadMore}
+                        hasMore={this.hasMore()}
+                        loader={<tr key='loader'><td key='load'>Загрузка...</td></tr>}>
+                        {this.renderBody()}
+                    </InfiniteScroll>}
+                </table>
             </div>
         );
     }
@@ -130,14 +116,17 @@ class App extends Component {
 
 function mapStateToProps (state) {
     return {
-        table: state.table
+        table: state.table,
+        counter: state.counter
     }
 }
 
 function mapDispatchToProps (dispatch) {
     return {
         setTableData: (data) => dispatch(setTableData(data)),
-        sortTable: (column, direction) => dispatch(sortTable(column, direction))
+        sortTable: (column, direction) => dispatch(sortTable(column, direction)),
+        incCounter: () => dispatch(incCounter()),
+        loading: () => dispatch(loading())
     }
 }
 

@@ -11,10 +11,11 @@ import {saveState, loadState} from './utils/localStorage';
 
 const persistedState = loadState();
 
-const store=createStore(allReducers, persistedState);
+export const store=createStore(allReducers, persistedState);
 
 store.subscribe(throttle(() => {
-   saveState(store.getState());
+   saveState({
+      table: store.getState().table});
 }, 1000));
 
 ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
