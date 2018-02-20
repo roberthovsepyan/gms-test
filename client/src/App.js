@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {v4} from 'uuid';
 import InfiniteScroll from 'react-infinite-scroller';
+import { animateScroll as scroll } from 'react-scroll';
 
 import {setTableData, sortTable} from './actions/table';
 import {incCounter} from './actions/counter';
@@ -60,6 +61,10 @@ class App extends Component {
         return this.props.counter.counter<19;
     };
 
+    scrollToTop = () => {
+        scroll.scrollToTop();
+    };
+
     renderBody () {
         return this.props.table.data.slice(0, 50*this.props.counter.counter).map((row, index) => {
             let tableData = [];
@@ -68,7 +73,7 @@ class App extends Component {
                     tableData.push(<td key={v4()}>{row[key]}</td>);
                 }
             }
-            return <tr key={index}>{tableData}</tr>;
+            return <tr className={index%2!==0 ? 'even' : undefined} key={index}>{tableData}</tr>;
         });
     }
 
@@ -107,6 +112,7 @@ class App extends Component {
     render() {
         return (
             <div>
+                <div className='backToTop' onClick={this.scrollToTop}>Back to Top</div>
                 <table>
                     {this.renderHead()}
                     {this.props.table.data && <InfiniteScroll

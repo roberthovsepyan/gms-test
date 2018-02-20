@@ -12,7 +12,8 @@ table {
 
 thead {
   position: fixed;
-  background-color: white;
+  background-color: #00838F;
+  color: white;
   top: 0;
   display: block;
   text-align: left;
@@ -45,9 +46,32 @@ thead > tr {
 
 
 .sortedDesc {
-  border-bottom: 3px solid blue;
+  border-bottom: 4px solid #FFCDD2;
 }
 
 .sortedAsc {
-  border-top: 3px solid blue;
+  border-top: 4px solid #FFCDD2;
+}
+
+.even {
+  background-color: #E0F7FA;
+}
+
+.backToTop {
+  position: fixed;
+  right: 10px;
+  border-radius: 10px;
+  top: 40%;
+  height: 100px;
+  width: 100px;
+  background-color: #00838F;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.backToTop:hover {
+  opacity: 0.8;
 }
