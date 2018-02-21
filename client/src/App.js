@@ -58,7 +58,7 @@ class App extends Component {
     };
 
     hasMore = () => {
-        return this.props.counter.counter<19;
+        return 50*this.props.counter.counter < this.props.table.data.length;
     };
 
     scrollToTop = () => {
